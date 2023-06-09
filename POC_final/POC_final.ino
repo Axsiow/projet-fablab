@@ -31,8 +31,7 @@ rgb_lcd lcd;
 #endif
 
 
-void setup()
-{
+void setup() {
   //Gestion de la ligne série
   Serial.begin(9600);
 
@@ -61,8 +60,7 @@ void setup()
 
 }
 
-void loop()
-{
+void loop() {
   int etatBouton = digitalRead(7);  
   // Serial.println(etatBouton);
 
