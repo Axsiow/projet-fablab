@@ -34,10 +34,14 @@ rgb_lcd lcd;
 void setup()
 {
   //Gestion de la ligne série
-    Serial.begin(9600);
+  Serial.begin(9600);
 
   //Gestion du bouton
-    pinMode(7, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  
+  //gestion du Buzzer
+  pinMode(3, OUTPUT);
+
 
   //Gestion de l'écran LCD
   lcd.begin(16, 2);
@@ -76,15 +80,25 @@ void loop()
                 lcd.print("Received: ");
                 lcd.setCursor(0, 1);
                 lcd.print((char*)buf);
+                tone (3, 600); // allume le buzzer
+                for (int x = 0; x < 2000 ; x++){
+                  tone (3, x);
+                  delay(1);
+                }
+                for (int x = 2000; x > 1 ; x--){
+                  tone (3, x);
+                  delay(1);
+                }
+              noTone(3);
               ShowSerial.print("reponse recue: [validée] ");
               ShowSerial.println((char*)buf);
-              delay(10000);
+              delay(8000);
             }
             else {
               ShowSerial.print("reponse recue: [ignorée] ");
               ShowSerial.println((char*)buf);
             }
-        } 
+        }
     delay(100);
   }
 
@@ -95,7 +109,7 @@ void loop()
     //Envoi d'une notification Lora et attente de la réponse
         ShowSerial.println("Envoi en cours d'une alerte...");
     // Envoi de la notification
-    uint8_t data[] = "alerte Enzo !!!";
+    uint8_t data[] = "alerte Timothe!!!";
     rf95.send(data, sizeof(data));
     
 
