@@ -1,5 +1,12 @@
 #include <RH_RF95.h>
+#include <Wire.h>
+#include "rgb_lcd.h"
 
+rgb_lcd lcd;
+
+const int colorR = 255;
+const int colorG = 0;
+const int colorB = 0;
 
 #ifdef __AVR__
     #include <SoftwareSerial.h>
@@ -36,9 +43,25 @@ void setup() {
     // you can set transmitter powers from 5 to 23 dBm:
     rf95.setTxPower(13, false);
     rf95.setFrequency(868.0);
+    
+    // set up the LCD's number of columns and rows:
+    lcd.begin(16, 2);
+    
+    // Print a message to the LCD.
+    lcd.print("hello, world!");
+    delay(1000);
+
+
 }
 
 void loop() {
+    // set the cursor to column 0, line 1
+    // (note: line 1 is the second row, since counting begins with 0):
+    lcd.setCursor(0, 1);
+    // print the number of seconds since reset:
+    lcd.print(millis()/1000);
+
+    // Sending and receiving code
     ShowSerial.println("Sending to rf95_server");
     // Send a message to rf95_server
     uint8_t data[] = "Hello la terre ici la lune";
@@ -55,6 +78,12 @@ void loop() {
         if (rf95.recv(buf, &len)) {
             ShowSerial.print("got reply: ");
             ShowSerial.println((char*)buf);
+
+            // Afficher le contenu du buffer sur l'écran LCD
+            lcd.clear();
+            lcd.print("Received: ");
+            lcd.setCursor(0, 1);
+            lcd.print((char*)buf);
         } else {
             ShowSerial.println("recv failed");
         }
