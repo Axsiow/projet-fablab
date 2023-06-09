@@ -48,10 +48,7 @@ void setup() {
     lcd.begin(16, 2);
     
     // Print a message to the LCD.
-    lcd.print("hello, world!");
-    delay(1000);
-
-
+    lcd.print("");
 }
 
 void loop() {
@@ -79,11 +76,12 @@ void loop() {
             ShowSerial.print("got reply: ");
             ShowSerial.println((char*)buf);
 
-            // Afficher le contenu du buffer sur l'écran LCD
-            lcd.clear();
-            lcd.print("Received: ");
-            lcd.setCursor(0, 1);
-            lcd.print((char*)buf);
+            if (strncmp((char*)buf, "alerte", 6) == 0) {
+                lcd.clear();
+                lcd.print("Received: ");
+                lcd.setCursor(0, 1);
+                lcd.print((char*)buf);
+              }
         } else {
             ShowSerial.println("recv failed");
         }
