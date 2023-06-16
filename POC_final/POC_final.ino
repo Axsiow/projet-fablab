@@ -135,8 +135,8 @@ void loop()
             }
 
             else {
-              // ShowSerial.print("reponse recue: [ignorée] ");
-              // ShowSerial.println((char*)buf);
+              ShowSerial.print("reponse recue: [ignorée] ");
+              ShowSerial.println((char*)buf);
             }
         }
     delay(100);
