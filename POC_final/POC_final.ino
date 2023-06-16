@@ -4,7 +4,7 @@
 
 rgb_lcd lcd;
 
-//Déclaration et mise en place de la partie radio
+// Déclaration et mise en place de la partie radio
 
 #include <RH_RF95.h>
 #ifdef __AVR__
@@ -31,23 +31,24 @@ rgb_lcd lcd;
 #endif
 
 
-void setup() {
-  //Gestion de la ligne série
+void setup()
+{
+  // Gestion de la ligne série
   Serial.begin(9600);
 
-  //Gestion du bouton
+  // Gestion du bouton
   pinMode(7, INPUT_PULLUP);
   
-  //gestion du Buzzer
+  // Gestion du Buzzer
   pinMode(3, OUTPUT);
 
 
-  //Gestion de l'écran LCD
+  // Gestion de l'écran LCD
   lcd.begin(16, 2);
   lcd.print("Booting...");
   delay(1000);
 
-  //Gestion de la carte radio
+  // Gestion de la carte radio
   ShowSerial.begin(115200);
   ShowSerial.println("RF95 server test.");
   if (!rf95.init()) {
@@ -55,12 +56,15 @@ void setup() {
       while (1);
   }
   // puissance autorisée de 5 à 23 dBm:
-  rf95.setTxPower(13, false);
+  rf95.setTxPower(23, false);
   rf95.setFrequency(868.0);
 
+  // Affichage de logs
+  Serial.println("Boitier prêt!");
 }
 
-void loop() {
+void loop()
+{
   int etatBouton = digitalRead(7);  
   // Serial.println(etatBouton);
 
@@ -68,17 +72,23 @@ void loop() {
     // Affichage standard si le bouton n'est pas cliqué
     lcd.begin(16, 2);
     lcd.print("En attente...");
+
     // On regarde si on reçois un message
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
 
+    // Si il y a un message dans le buffer on le lis
     if (rf95.recv(buf, &len)) {
+      //On vérifie si le message commence par "alerte"
             if (strncmp((char*)buf, "alerte", 6) == 0) {
                 lcd.clear();
-                lcd.print("Received: ");
-                lcd.setCursor(0, 1);
+                // lcd.print("Received: ");
+                // lcd.setCursor(0, 1);
                 lcd.print((char*)buf);
-                tone (3, 600); // allume le buzzer
+
+                //On fait sonner le Buzzer
+                /*
+                tone (3, 600);
                 for (int x = 0; x < 2000 ; x++){
                   tone (3, x);
                   delay(1);
@@ -87,14 +97,41 @@ void loop() {
                   tone (3, x);
                   delay(1);
                 }
-              noTone(3);
+                */
+              tone (3, 600);
+              delay(100);
+              noTone (3);
+
               ShowSerial.print("reponse recue: [validée] ");
               ShowSerial.println((char*)buf);
-              delay(8000);
-            }
-            else {
-              ShowSerial.print("reponse recue: [ignorée] ");
+              lcd.setCursor(0, 1);
+              lcd.print("Clic pour valid");
+
+              //On attends que le boutton soit appuyé
+              do {
+                etatBouton = digitalRead(7);
+                delay(5);
+              } while (etatBouton == 1);
+              lcd.clear();
+              lcd.print("OK");
+              ShowSerial.print("L'utilisateur à cliqué pour aquiter l'alerte : ");
+
+              // Il faut reset l'état du bouton
+              etatBouton = 1;
+
+              // Envoi d'une réponse à la personne attaquée
+              uint8_t data[] = "ack Timothe";
+              rf95.send(data, sizeof(data));
+              rf95.waitPacketSent();
+              ShowSerial.print("ack envoyé: ");
               ShowSerial.println((char*)buf);
+              delay(4000);
+
+            }
+
+            else {
+              // ShowSerial.print("reponse recue: [ignorée] ");
+              // ShowSerial.println((char*)buf);
             }
         }
     delay(100);
@@ -104,39 +141,19 @@ void loop() {
     // Ici, le bouton à été cliqué. On doit donc transmettre une alerte.
     lcd.begin(16, 2);
     lcd.print("Envoi en cours...");
-    //Envoi d'une notification Lora et attente de la réponse
-        ShowSerial.println("Envoi en cours d'une alerte...");
-    // Envoi de la notification
+
+    // Affichage de logs sur la console
+    ShowSerial.println("Envoi en cours d'une alerte...");
+
+    // Envoi de la notification Lora
     uint8_t data[] = "alerte Timothe!!!";
     rf95.send(data, sizeof(data));
-    
-
     rf95.waitPacketSent();
+    lcd.clear();
     lcd.print("Alerte envoyee");
-    delay(9000);
 
-/** On commente la partie "vérification de réponse" pour l'instant
-    // Attente de la réponse
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-    uint8_t len = sizeof(buf);
-    lcd.print("Alerte envoyee");
-    delay(9000);
-
-    if (rf95.waitAvailableTimeout(3000)) {
-        // Should be a reply message for us now
-        if (rf95.recv(buf, &len)) {
-            ShowSerial.print("reponse recue: ");
-            ShowSerial.println((char*)buf);
-            lcd.begin(16, 2);
-            lcd.print("Alerte envoyee");
-            delay(10000);
-        } else {
-            ShowSerial.println("recv failed");
-        }
-    } else {
-        ShowSerial.println("Aucune reponse...");
-    }
-**/
-delay(1000);
+    //Affichage de logs sur la console
+    ShowSerial.println("Alerte envoyée");
+    delay(1000);
 }
 }
