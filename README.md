@@ -1,5 +1,5 @@
 # Projet FabLab
-## ENSIMAG RIE2 2023
+## ENSIMAG RIE2 2022-2023
 
 Ce projet à été réalisé lors du cours FabLab sous la direction de Monsieur Germain LEMASSON qui a pour but de créer deux boites connectées entre elles sur du Lora.
 <br>
