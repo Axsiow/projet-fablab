@@ -89,11 +89,11 @@ void loop()
                 //On fait sonner le Buzzer
                 
                 tone (3, 600);
-                for (int x = 0; x < 500 ; x++){
+                for (int x = 0; x < 2000 ; x++){
                   tone (3, x);
                   delay(1);
                 }
-                for (int x = 500; x > 1 ; x--){
+                for (int x = 2000; x > 1 ; x--){
                   tone (3, x);
                   delay(1);
                 }
@@ -120,7 +120,7 @@ void loop()
               etatBouton = 1;
 
               // Envoi d'une réponse à la personne attaquée
-              uint8_t data[] = "ack Timothe";
+              uint8_t data[] = "ack Enzo";
               rf95.send(data, sizeof(data));
               rf95.waitPacketSent();
               ShowSerial.print("ack envoyé: ");
@@ -151,7 +151,7 @@ void loop()
     ShowSerial.println("Envoi en cours d'une alerte...");
 
     // Envoi de la notification Lora
-    uint8_t data[] = "alerte Timothe!!!";
+    uint8_t data[] = "alerte Enzo!!!";
     rf95.send(data, sizeof(data));
     rf95.waitPacketSent();
     lcd.clear();
