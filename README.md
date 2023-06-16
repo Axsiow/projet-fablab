@@ -1,8 +1,8 @@
 # Projet FabLab
-## Projet FabLab ENSIMAG RIE2 2023
+## ENSIMAG RIE2 2023
 
 Projet créer lors du cours FabLab donné par Monsieur Germain LEMASSON qui a pour but de créer deux boites, chacune est composé d'un Arduino UNO, un bouton poussoir, un haut parleur et d'un écran (Grove LCD 16 par 2)
- 
+ ![POC](https://photos.app.goo.gl/qU3itHmhpQXuhBmZ6)
  
  
  > Made with ❤️ in Grenoble, France 🗻 by Thimothé POUJOL, Enzo FOGLIANO
