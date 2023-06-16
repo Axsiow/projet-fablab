@@ -87,19 +87,19 @@ void loop()
                 lcd.print((char*)buf);
 
                 //On fait sonner le Buzzer
-                /*
+                
                 tone (3, 600);
-                for (int x = 0; x < 2000 ; x++){
+                for (int x = 0; x < 500 ; x++){
                   tone (3, x);
                   delay(1);
                 }
-                for (int x = 2000; x > 1 ; x--){
+                for (int x = 500; x > 1 ; x--){
                   tone (3, x);
                   delay(1);
                 }
-                */
-              tone (3, 600);
-              delay(100);
+                
+              // tone (3, 600);
+              // delay(100);
               noTone (3);
 
               ShowSerial.print("reponse recue: [validée] ");
@@ -127,6 +127,11 @@ void loop()
               ShowSerial.println((char*)buf);
               delay(4000);
 
+            }
+
+            // On vérifie si le message commence par "ack"
+            if (strncmp((char*)buf, "ack", 6) == 0) {
+              ShowSerial.println("Message d'aquitement reçu");
             }
 
             else {
